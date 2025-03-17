@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import streamlit as st
+import numpy as np
 
 st.set_page_config(layout="wide")
 
@@ -37,7 +38,7 @@ connection_time = 2     # s
 connection_curr = 10    # mA
 
 # Assumption for Self-Discharge
-batt_capacity   = 10    # mAh
+batt_capacity   = 15    # mAh
 activity_rate   = 10    # %
 
 # Calculation Section
@@ -69,6 +70,14 @@ power_consumption = (
     sum(transmission_consumption.values())
 )
 
+# Volume Conversion
+a = 5.60373414
+b = -0.00963755
+c = -6.00269058
+vol_temp = -np.log((power_consumption-c)/a)/b
+safety_margin = 0
+vol = vol_temp + vol_temp*safety_margin/100
+
 # Data for the plot
 categories = ["Shelf-Life", "Operation", "Data Transmission"]
 values = [
@@ -87,11 +96,11 @@ edge_color = "#FFFFFF"
 
 with col3:
     st.markdown(
-        "<h1 style='text-align: center; font-size: 32px;'>The Estimated Battery Capacity is:</h1>",
+        "<h1 style='text-align: center; font-size: 32px;'>The Estimated Battery Specs:</h1>",
         unsafe_allow_html=True
     )
     st.markdown(
-        f"<h1 style='text-align: center; font-size: 32px;'>{power_consumption:.2f} mAh</h1>",
+        f"<h1 style='text-align: center; font-size: 32px;'>{power_consumption:.2f} mAh  /  {vol:.0f} mm<sup>3</sup> <br> </h1>",
         unsafe_allow_html=True
     )
 
