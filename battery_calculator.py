@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 st.title("Energy Consumption Calculator")
 
 # Description
-st.write("Adjust the parameters below to see how they impact energy budget.")
+st.write("Adjust the parameters below to see how they impact energy budget and related battery volume.")
 
 col1, col2, col3 = st.columns([5,1,6])
 
@@ -16,10 +16,10 @@ with col1:
     # Define variable parameters
     shelf_life              = st.slider("Shelf-Life  [years]", min_value=1, max_value=10, value=5, step=1)
     wakeup_interval         = st.slider("Wake-Up Interval [s]", min_value=1, max_value=30, value=10)
-    lifetime                = st.slider("Sensor Lifetime [months]", min_value=1, max_value=18, value=12, step=1)
+    lifetime                = st.slider("Sensor Lifetime [months]", min_value=1, max_value=12, value=12, step=1)
     activity_monitoring_f   = st.slider("Activity Monitoring Frequency [Hz]", min_value=0.0, max_value=2.0, value=1.0, step=0.5)
     meas_f                  = st.slider("Measurement Frequency [Hz]", min_value=5, max_value=20, value=10, step=1)
-    transmission_rate       = st.slider("Transmission Rate [tx/day]", min_value=0.5, max_value=2.0, value=1.0, step=0.5)
+    transmission_rate       = st.slider("Transmission Interval [days]", min_value=1, max_value=3, value=1, step=1)
 
 # Define fixed parameters
 self_discharge  = 1     # %
@@ -61,7 +61,7 @@ operation_consumption = {
 }
 
 transmission_consumption = {
-    "Transmission"          : (connection_curr * connection_time / 3600) * (365 * lifetime/12) * transmission_rate
+    "Transmission"          : (connection_curr * connection_time / 3600) * (365 * lifetime/12) / transmission_rate
 }
 
 power_consumption = (
@@ -96,13 +96,25 @@ edge_color = "#FFFFFF"
 
 with col3:
     st.markdown(
-        "<h1 style='text-align: center; font-size: 32px;'>The Estimated Battery Specs:</h1>",
+        """
+        <div style='width: 600px; text-align: left;'>
+            <h1 style='font-size: 32px;'>Estimated Battery Capacity<sup>*</sup>: {:.2f} mAh</h1>
+        </div>
+        """.format(power_consumption),
         unsafe_allow_html=True
     )
+
     st.markdown(
-        f"<h1 style='text-align: center; font-size: 32px;'>{power_consumption:.2f} mAh  /  {vol:.0f} mm<sup>3</sup> <br> </h1>",
+        """
+        <div style='width: 600px; text-align: left;'>
+            <h1 style='font-size: 32px;'>Estimated Battery Volume<sup>*</sup>: {:.0f} mm<sup>3</sup><br></h1>
+        </div>
+        """.format(vol),
         unsafe_allow_html=True
     )
+
+    st.markdown("<p><sup>*</sup> Based on current design and assumption. Subject to change.</p>",
+                unsafe_allow_html=True)
 
     fig, ax = plt.subplots(figsize=(8, 5), facecolor=fig_bg)
     ax.set_facecolor(ax_bg)
