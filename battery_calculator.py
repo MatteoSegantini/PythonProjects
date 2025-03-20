@@ -19,7 +19,7 @@ with col1:
     lifetime                = st.slider("Sensor Lifetime [months]", min_value=1, max_value=12, value=12, step=1)
     activity_monitoring_f   = st.slider("Activity Monitoring Frequency [Hz]", min_value=0.0, max_value=2.0, value=1.0, step=0.5)
     meas_f                  = st.slider("Measurement Frequency [Hz]", min_value=5, max_value=20, value=10, step=1)
-    transmission_rate       = st.slider("Transmission Interval [days]", min_value=1, max_value=3, value=1, step=1)
+    transmission_rate       = st.slider("Transmission Interval [every x days]", min_value=1, max_value=3, value=1, step=1)
 
 # Define fixed parameters
 self_discharge  = 1     # %
